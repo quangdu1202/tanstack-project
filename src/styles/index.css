@@ -1,0 +1,424 @@
+@import "tailwindcss";
+@import "./utilities.css";
+
+#app {
+    @apply flex h-screen flex-col;
+}
+
+.header {
+    @apply relative flex h-16 items-center justify-between bg-surface-tonal-a0 text-surface-tonal-a50;
+}
+
+.header-logo {
+    @apply h-full w-36 cursor-pointer px-8;
+}
+
+.header-links {
+    @apply flex h-full items-center;
+
+    a {
+        @apply flex h-full items-center px-8 font-semibold uppercase;
+
+        &:hover {
+            @apply text-primary-a20 bg-surface-a20;
+        }
+    }
+}
+
+.header-search {
+    @apply relative flex h-10 flex-1 items-center justify-center;
+
+    #header-search-input {
+        @apply h-full w-full max-w-screen-md rounded-xl border px-8 bg-surface-a0 border-surface-a50;
+
+        &::placeholder {
+            @apply text-surface-a50;
+        }
+
+        &:focus {
+            @apply shadow-sm shadow-blue-400 outline-none border-primary-a50 bg-surface-a10;
+        }
+
+    }
+
+    &:has(.popover-wrapper) #header-search-input {
+        @apply rounded-b-none;
+    }
+
+    /* override template*/
+
+    .popover-wrapper {
+        @apply top-10 flex justify-center border-none bg-transparent shadow-none;
+    }
+
+    .popover-content {
+        @apply w-full max-w-screen-md rounded-b-xl border border-t-0 pb-0 bg-surface-a10 border-surface-a50;
+
+        &.search-focussed {
+            @apply border-t-0 shadow-sm shadow-blue-400 border-primary-a50;
+        }
+
+        .list-item {
+            &.placeholder {
+                @apply justify-center text-center italic text-surface-a50;
+            }
+
+            &:last-child {
+                @apply rounded-b-xl;
+            }
+        }
+    }
+}
+
+.header-actions {
+    @apply ml-auto flex h-full items-center;
+
+    > button {
+        @apply h-full cursor-pointer px-8;
+
+        &:last-child {
+            @apply mr-0 pr-12;
+        }
+    }
+
+    svg {
+        @apply fill-surface-tonal-a50 stroke-surface-tonal-a50;
+    }
+
+    button:hover svg {
+        @apply fill-primary-a20 stroke-primary-a20;
+    }
+
+    /* override template*/
+
+    .popover-wrapper {
+        @apply fixed right-0 max-h-96 w-96 rounded-none border-none top-[66px];
+
+        .popover-content {
+            @apply max-h-96 w-full overflow-y-auto no-scrollbar;
+        }
+    }
+
+    .popover-bottom {
+        @apply border border-surface-a50;
+
+        button {
+            @apply h-full w-full cursor-pointer px-8;
+
+            &:hover {
+                @apply bg-surface-a20;
+            }
+
+            svg {
+                @apply inline;
+            }
+        }
+    }
+
+    .download-list-items {
+        @apply flex w-full flex-col;
+
+        .download-item {
+            @apply flex items-center justify-between border-l-2 px-4 py-3;
+
+            &:hover {
+                @apply bg-surface-a20;
+            }
+        }
+
+        /* File icon */
+
+        .file-icon {
+            @apply flex h-10 w-10 items-center justify-center text-xl;
+        }
+
+        /* File details */
+
+        .details {
+            @apply flex flex-1 flex-col;
+        }
+
+        .filename {
+            @apply w-48 truncate text-sm font-medium text-primary-a50;
+        }
+
+        .status {
+            @apply text-xs text-primary-a20;
+        }
+
+        /* Actions (buttons) */
+
+        .actions {
+            @apply flex gap-2;
+        }
+
+        .actions button {
+            @apply flex h-8 w-8 items-center justify-center rounded-full text-sm bg-surface-a20;
+
+            &:hover {
+                @apply cursor-pointer bg-surface-a30;
+            }
+        }
+
+        /* Progress Bar */
+
+        .progress-bar {
+            @apply mt-1 h-1 w-full rounded bg-surface-a20;
+        }
+
+        .progress {
+            @apply h-full rounded bg-primary-a50;
+        }
+
+        /* Status-specific styles */
+
+        .queued {
+            @apply border-l-yellow-500;
+
+            .status {
+                @apply text-yellow-500;
+            }
+        }
+
+        .downloading {
+            @apply border-l-blue-500;
+
+            .status {
+                @apply text-blue-500;
+            }
+        }
+
+        .downloaded {
+            @apply border-l-green-500;
+
+            .status {
+                @apply text-green-500;
+            }
+        }
+
+        .error {
+            @apply border-l-red-500;
+
+            .status {
+                @apply text-red-500;
+            }
+        }
+    }
+}
+
+.loader-bar {
+    @apply sticky top-0 w-full h-0.5 bg-primary-a0;
+}
+
+.main {
+    @apply relative flex flex-1;
+}
+
+.main-content {
+    @apply flex-1 bg-surface-a30;
+}
+
+.slide-out-wrapper {
+    @apply absolute top-0 z-10 h-full w-full;
+}
+
+.slide-out-inner {
+    @apply relative flex h-full w-full overflow-hidden;
+}
+
+.slide-out-trigger-actions {
+    @apply absolute top-0 right-96 z-10 flex h-8 cursor-pointer opacity-30;
+
+    &:hover {
+        @apply opacity-100;
+    }
+}
+
+.slide-out-trigger-btn {
+    @apply flex h-8 w-8 cursor-pointer items-center justify-center border bg-surface-a20;
+
+    svg {
+        @apply h-4 w-4 stroke-primary-a50;
+
+        &.filled {
+            @apply fill-primary-a50;
+        }
+    }
+
+    &:hover {
+        @apply border-surface-a50;
+    }
+
+    &:hover svg {
+        @apply stroke-primary-a0;
+
+        &.filled {
+            @apply fill-primary-a0;
+        }
+    }
+}
+
+.slide-out-content {
+    @apply relative flex-1 bg-surface-a30;
+
+    .zoom-controller-bar {
+        @apply absolute top-1/2 right-4 flex flex-col items-center gap-2 bg-surface-a10 opacity-30
+        border border-surface-a50 rounded-lg p-2 transform -translate-y-1/2;
+
+        &:hover {
+            @apply opacity-100;
+        }
+    }
+
+    .zoom-btn {
+        @apply w-4 h-4 flex items-center justify-center bg-primary-a10 text-primary-a50 rounded;
+    }
+
+    .zoom-slider {
+        @apply w-2 cursor-pointer appearance-none bg-transparent vertical-range-input;
+    }
+
+    /* Slider track and thumb styling (for better appearance) */
+
+    .zoom-slider::-webkit-slider-runnable-track {
+        @apply h-2 w-full rounded-full bg-primary-a40;
+    }
+
+    .zoom-slider::-webkit-slider-thumb {
+        @apply h-4 w-2 appearance-none rounded-full bg-primary-a10;
+    }
+
+    /* Update Gallery Slider (Up from bottom with trigger button) */
+    .gallery-slider {
+        @apply absolute bottom-0 z-20 flex items-center justify-center gap-4 py-2 w-full;
+    }
+
+    .gallery-toggle-btn {
+        @apply absolute top-0 left-1/2 z-30 flex justify-center items-center w-8 h-8 bg-surface-a20
+        rounded-full cursor-pointer transform -translate-y-full text-surface-tonal-a50;
+    }
+
+    .gallery-slider-list {
+        @apply flex items-center gap-4 max-w-screen-md p-2 overflow-x-auto no-scrollbar;
+    }
+
+    .thumbnail {
+        @apply w-64 h-64 border-2 rounded-lg cursor-pointer transition-transform duration-200 hover:border-primary-a50;
+
+        &.active {
+            @apply border-primary-a50;
+        }
+    }
+
+    .gallery-nav {
+        @apply cursor-pointer flex items-center justify-center text-white
+        rounded-lg transition opacity-50 hover:opacity-100;
+
+        svg {
+            @apply w-10 h-10;
+        }
+    }
+}
+
+.sidebar {
+    @apply relative flex w-96 flex-col border-r border-surface-a50 bg-surface-a10;
+
+    .sidebar-actions {
+        @apply absolute top-0 z-40 flex h-10 w-96 items-center justify-between border-b border-primary-a50;
+
+        button {
+            @apply h-full w-8 cursor-pointer px-6;
+        }
+
+        svg {
+            @apply stroke-primary-a50;
+
+            &.filled {
+                @apply fill-primary-a50;
+            }
+        }
+
+        button:hover svg {
+            @apply stroke-primary-a0;
+
+            &.filled {
+                @apply fill-primary-a0;
+            }
+        }
+
+        .minimize-sidebar {
+            @apply absolute right-6 z-10 flex h-8 cursor-pointer items-center justify-center
+            rounded-full px-0 bg-surface-a10;
+        }
+    }
+
+    .sidebar-content {
+        @apply flex-1 overflow-y-scroll no-scrollbar;
+    }
+
+    .post-info,
+    .post-list-tags {
+        @apply flex flex-col;
+    }
+
+    .section-title {
+        @apply sticky top-0 z-20 flex w-full items-center justify-center border-b border-y-amber-300
+        text-xl font-bold bg-surface-a10 min-h-10 text-primary-a50;
+    }
+
+    .list-items {
+        @apply flex-1 text-surface-tonal-a50;
+    }
+
+    .item {
+        @apply flex h-10 w-full justify-between items-center px-6;
+
+        &:hover {
+            @apply bg-surface-a20;
+        }
+    }
+
+    .tag-follow {
+        @apply cursor-pointer;
+
+        svg {
+            @apply h-5 w-5;
+        }
+    }
+
+    .tag-pill {
+        @apply flex ml-3 px-3 text-sm items-center justify-center rounded-full bg-primary-a10 text-white cursor-pointer;
+    }
+
+    .tag-name {
+        @apply max-w-56 truncate;
+    }
+
+    .tag-post-count {
+        @apply ml-auto text-xs text-primary-a50;
+    }
+
+    .sidebar-bottom {
+        @apply mt-5 border-t pt-5 border-surface-a50;
+
+        .post-actions {
+            @apply flex flex-col items-center justify-center;
+        }
+
+        .post-like-btn {
+            @apply flex h-20 w-20 cursor-pointer items-center justify-center text-primary-a50;
+
+            svg {
+                @apply h-full w-full;
+            }
+        }
+
+        .post-vote {
+            @apply flex w-full items-center justify-center py-4 text-primary-a50;
+
+            svg {
+                @apply cursor-pointer;
+            }
+        }
+    }
+}
