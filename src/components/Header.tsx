@@ -15,7 +15,12 @@ export default function Header() {
 
 function Logo() {
   return (
-    <Link to={'/'}>
+    <Link
+      to={'/'}
+      activeProps={{
+        className: '',
+      }}
+    >
       <svg
         className="header-logo"
         fill="none"
@@ -48,9 +53,30 @@ function Logo() {
 function Links() {
   return (
     <nav className="header-links">
-      <Link to={'/recommended'}>Recommended</Link>
-      <Link to={'/popular'}>Popular</Link>
-      <Link to={'/explore'}>Explore</Link>
+      <Link
+        to={'/recommended'}
+        activeProps={{
+          className: 'active',
+        }}
+      >
+        Recommended
+      </Link>
+      <Link
+        to={'/popular'}
+        activeProps={{
+          className: 'active',
+        }}
+      >
+        Popular
+      </Link>
+      <Link
+        to={'/explore'}
+        activeProps={{
+          className: 'active',
+        }}
+      >
+        Explore
+      </Link>
     </nav>
   );
 }

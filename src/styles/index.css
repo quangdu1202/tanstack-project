@@ -19,6 +19,10 @@
     a {
         @apply flex h-full items-center px-8 font-semibold uppercase;
 
+        &.active {
+            @apply text-primary-a20 bg-surface-a10;
+        }
+
         &:hover {
             @apply text-primary-a20 bg-surface-a20;
         }
