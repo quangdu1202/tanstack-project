@@ -478,7 +478,7 @@ button {
         @apply flex flex-col pb-10;
 
         .list-item {
-            @apply px-8 py-2 flex items-center;
+            @apply px-8 py-2 flex items-center first:rounded-t last:rounded-b;
 
             &:hover {
                 @apply bg-surface-a20;

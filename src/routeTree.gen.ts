@@ -12,9 +12,16 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RecommendedImport } from './routes/recommended'
-import { Route as PopularImport } from './routes/popular'
-import { Route as ExploreImport } from './routes/explore'
+import { Route as PostsImport } from './routes/posts'
+import { Route as CollectionsImport } from './routes/collections'
+import { Route as BooksImport } from './routes/books'
 import { Route as IndexImport } from './routes/index'
+import { Route as PostsIndexImport } from './routes/posts/index'
+import { Route as CollectionsIndexImport } from './routes/collections/index'
+import { Route as BooksIndexImport } from './routes/books/index'
+import { Route as PostsRecommendedImport } from './routes/posts/recommended'
+import { Route as PostsPopularImport } from './routes/posts/popular'
+import { Route as PostsFollowingImport } from './routes/posts/following'
 
 // Create/Update Routes
 
@@ -24,15 +31,21 @@ const RecommendedRoute = RecommendedImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PopularRoute = PopularImport.update({
-  id: '/popular',
-  path: '/popular',
+const PostsRoute = PostsImport.update({
+  id: '/posts',
+  path: '/posts',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ExploreRoute = ExploreImport.update({
-  id: '/explore',
-  path: '/explore',
+const CollectionsRoute = CollectionsImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BooksRoute = BooksImport.update({
+  id: '/books',
+  path: '/books',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -40,6 +53,42 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const PostsIndexRoute = PostsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PostsRoute,
+} as any)
+
+const CollectionsIndexRoute = CollectionsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CollectionsRoute,
+} as any)
+
+const BooksIndexRoute = BooksIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BooksRoute,
+} as any)
+
+const PostsRecommendedRoute = PostsRecommendedImport.update({
+  id: '/recommended',
+  path: '/recommended',
+  getParentRoute: () => PostsRoute,
+} as any)
+
+const PostsPopularRoute = PostsPopularImport.update({
+  id: '/popular',
+  path: '/popular',
+  getParentRoute: () => PostsRoute,
+} as any)
+
+const PostsFollowingRoute = PostsFollowingImport.update({
+  id: '/following',
+  path: '/following',
+  getParentRoute: () => PostsRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -53,18 +102,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/explore': {
-      id: '/explore'
-      path: '/explore'
-      fullPath: '/explore'
-      preLoaderRoute: typeof ExploreImport
+    '/books': {
+      id: '/books'
+      path: '/books'
+      fullPath: '/books'
+      preLoaderRoute: typeof BooksImport
       parentRoute: typeof rootRoute
     }
-    '/popular': {
-      id: '/popular'
-      path: '/popular'
-      fullPath: '/popular'
-      preLoaderRoute: typeof PopularImport
+    '/collections': {
+      id: '/collections'
+      path: '/collections'
+      fullPath: '/collections'
+      preLoaderRoute: typeof CollectionsImport
+      parentRoute: typeof rootRoute
+    }
+    '/posts': {
+      id: '/posts'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsImport
       parentRoute: typeof rootRoute
     }
     '/recommended': {
@@ -74,53 +130,184 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecommendedImport
       parentRoute: typeof rootRoute
     }
+    '/posts/following': {
+      id: '/posts/following'
+      path: '/following'
+      fullPath: '/posts/following'
+      preLoaderRoute: typeof PostsFollowingImport
+      parentRoute: typeof PostsImport
+    }
+    '/posts/popular': {
+      id: '/posts/popular'
+      path: '/popular'
+      fullPath: '/posts/popular'
+      preLoaderRoute: typeof PostsPopularImport
+      parentRoute: typeof PostsImport
+    }
+    '/posts/recommended': {
+      id: '/posts/recommended'
+      path: '/recommended'
+      fullPath: '/posts/recommended'
+      preLoaderRoute: typeof PostsRecommendedImport
+      parentRoute: typeof PostsImport
+    }
+    '/books/': {
+      id: '/books/'
+      path: '/'
+      fullPath: '/books/'
+      preLoaderRoute: typeof BooksIndexImport
+      parentRoute: typeof BooksImport
+    }
+    '/collections/': {
+      id: '/collections/'
+      path: '/'
+      fullPath: '/collections/'
+      preLoaderRoute: typeof CollectionsIndexImport
+      parentRoute: typeof CollectionsImport
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/'
+      fullPath: '/posts/'
+      preLoaderRoute: typeof PostsIndexImport
+      parentRoute: typeof PostsImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface BooksRouteChildren {
+  BooksIndexRoute: typeof BooksIndexRoute
+}
+
+const BooksRouteChildren: BooksRouteChildren = {
+  BooksIndexRoute: BooksIndexRoute,
+}
+
+const BooksRouteWithChildren = BooksRoute._addFileChildren(BooksRouteChildren)
+
+interface CollectionsRouteChildren {
+  CollectionsIndexRoute: typeof CollectionsIndexRoute
+}
+
+const CollectionsRouteChildren: CollectionsRouteChildren = {
+  CollectionsIndexRoute: CollectionsIndexRoute,
+}
+
+const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
+  CollectionsRouteChildren,
+)
+
+interface PostsRouteChildren {
+  PostsFollowingRoute: typeof PostsFollowingRoute
+  PostsPopularRoute: typeof PostsPopularRoute
+  PostsRecommendedRoute: typeof PostsRecommendedRoute
+  PostsIndexRoute: typeof PostsIndexRoute
+}
+
+const PostsRouteChildren: PostsRouteChildren = {
+  PostsFollowingRoute: PostsFollowingRoute,
+  PostsPopularRoute: PostsPopularRoute,
+  PostsRecommendedRoute: PostsRecommendedRoute,
+  PostsIndexRoute: PostsIndexRoute,
+}
+
+const PostsRouteWithChildren = PostsRoute._addFileChildren(PostsRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/explore': typeof ExploreRoute
-  '/popular': typeof PopularRoute
+  '/books': typeof BooksRouteWithChildren
+  '/collections': typeof CollectionsRouteWithChildren
+  '/posts': typeof PostsRouteWithChildren
   '/recommended': typeof RecommendedRoute
+  '/posts/following': typeof PostsFollowingRoute
+  '/posts/popular': typeof PostsPopularRoute
+  '/posts/recommended': typeof PostsRecommendedRoute
+  '/books/': typeof BooksIndexRoute
+  '/collections/': typeof CollectionsIndexRoute
+  '/posts/': typeof PostsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/explore': typeof ExploreRoute
-  '/popular': typeof PopularRoute
   '/recommended': typeof RecommendedRoute
+  '/posts/following': typeof PostsFollowingRoute
+  '/posts/popular': typeof PostsPopularRoute
+  '/posts/recommended': typeof PostsRecommendedRoute
+  '/books': typeof BooksIndexRoute
+  '/collections': typeof CollectionsIndexRoute
+  '/posts': typeof PostsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/explore': typeof ExploreRoute
-  '/popular': typeof PopularRoute
+  '/books': typeof BooksRouteWithChildren
+  '/collections': typeof CollectionsRouteWithChildren
+  '/posts': typeof PostsRouteWithChildren
   '/recommended': typeof RecommendedRoute
+  '/posts/following': typeof PostsFollowingRoute
+  '/posts/popular': typeof PostsPopularRoute
+  '/posts/recommended': typeof PostsRecommendedRoute
+  '/books/': typeof BooksIndexRoute
+  '/collections/': typeof CollectionsIndexRoute
+  '/posts/': typeof PostsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/explore' | '/popular' | '/recommended'
+  fullPaths:
+    | '/'
+    | '/books'
+    | '/collections'
+    | '/posts'
+    | '/recommended'
+    | '/posts/following'
+    | '/posts/popular'
+    | '/posts/recommended'
+    | '/books/'
+    | '/collections/'
+    | '/posts/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/explore' | '/popular' | '/recommended'
-  id: '__root__' | '/' | '/explore' | '/popular' | '/recommended'
+  to:
+    | '/'
+    | '/recommended'
+    | '/posts/following'
+    | '/posts/popular'
+    | '/posts/recommended'
+    | '/books'
+    | '/collections'
+    | '/posts'
+  id:
+    | '__root__'
+    | '/'
+    | '/books'
+    | '/collections'
+    | '/posts'
+    | '/recommended'
+    | '/posts/following'
+    | '/posts/popular'
+    | '/posts/recommended'
+    | '/books/'
+    | '/collections/'
+    | '/posts/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ExploreRoute: typeof ExploreRoute
-  PopularRoute: typeof PopularRoute
+  BooksRoute: typeof BooksRouteWithChildren
+  CollectionsRoute: typeof CollectionsRouteWithChildren
+  PostsRoute: typeof PostsRouteWithChildren
   RecommendedRoute: typeof RecommendedRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ExploreRoute: ExploreRoute,
-  PopularRoute: PopularRoute,
+  BooksRoute: BooksRouteWithChildren,
+  CollectionsRoute: CollectionsRouteWithChildren,
+  PostsRoute: PostsRouteWithChildren,
   RecommendedRoute: RecommendedRoute,
 }
 
@@ -135,22 +322,62 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/explore",
-        "/popular",
+        "/books",
+        "/collections",
+        "/posts",
         "/recommended"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/explore": {
-      "filePath": "explore.tsx"
+    "/books": {
+      "filePath": "books.tsx",
+      "children": [
+        "/books/"
+      ]
     },
-    "/popular": {
-      "filePath": "popular.tsx"
+    "/collections": {
+      "filePath": "collections.tsx",
+      "children": [
+        "/collections/"
+      ]
+    },
+    "/posts": {
+      "filePath": "posts.tsx",
+      "children": [
+        "/posts/following",
+        "/posts/popular",
+        "/posts/recommended",
+        "/posts/"
+      ]
     },
     "/recommended": {
       "filePath": "recommended.tsx"
+    },
+    "/posts/following": {
+      "filePath": "posts/following.tsx",
+      "parent": "/posts"
+    },
+    "/posts/popular": {
+      "filePath": "posts/popular.tsx",
+      "parent": "/posts"
+    },
+    "/posts/recommended": {
+      "filePath": "posts/recommended.tsx",
+      "parent": "/posts"
+    },
+    "/books/": {
+      "filePath": "books/index.tsx",
+      "parent": "/books"
+    },
+    "/collections/": {
+      "filePath": "collections/index.tsx",
+      "parent": "/collections"
+    },
+    "/posts/": {
+      "filePath": "posts/index.tsx",
+      "parent": "/posts"
     }
   }
 }

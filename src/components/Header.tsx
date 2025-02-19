@@ -51,33 +51,106 @@ function Logo() {
 }
 
 function Links() {
+  const [selectedSubmenu, setSelectedSubmenu] = React.useState<Record<string, string>>({});
+
+  const handleSetSubmenu = (key: string, submenu: string) => {
+    setSelectedSubmenu({ [key]: submenu }); // Automatically resets other menus
+  };
+
   return (
     <nav className="header-links">
-      <Link
-        to={'/recommended'}
-        activeProps={{
-          className: 'active',
-        }}
-      >
-        Recommended
-      </Link>
-      <Link
-        to={'/popular'}
-        activeProps={{
-          className: 'active',
-        }}
-      >
-        Popular
-      </Link>
-      <Link
-        to={'/explore'}
-        activeProps={{
-          className: 'active',
-        }}
-      >
-        Explore
-      </Link>
+      <DropdownLink
+        label="Posts"
+        to="/posts"
+        submenu={[
+          { label: 'Recommended', to: '/posts/recommended' },
+          { label: 'Following', to: '/posts/following' },
+          { label: 'Popular', to: '/posts/popular' },
+        ]}
+        selectedSubmenu={selectedSubmenu['Posts'] || ''}
+        setSelectedSubmenu={(submenu) => handleSetSubmenu('Posts', submenu)}
+      />
+
+      <DropdownLink
+        label="Books"
+        to="/books"
+        submenu={[
+          { label: 'Recommended', to: '/books/recommended' },
+          { label: 'Following', to: '/books/following' },
+          { label: 'Popular', to: '/books/popular' },
+        ]}
+        selectedSubmenu={selectedSubmenu['Books'] || ''}
+        setSelectedSubmenu={(submenu) => handleSetSubmenu('Books', submenu)}
+      />
+
+      <DropdownLink
+        label="Collections"
+        to="/collections"
+        submenu={[
+          { label: 'Recommended', to: '/collections/recommended' },
+          { label: 'Following', to: '/collections/following' },
+          { label: 'Popular', to: '/collections/popular' },
+        ]}
+        selectedSubmenu={selectedSubmenu['Collections'] || ''}
+        setSelectedSubmenu={(submenu) => handleSetSubmenu('Collections', submenu)}
+      />
     </nav>
+  );
+}
+
+function DropdownLink({
+  label,
+  to,
+  submenu,
+  defaultSelectedSubmenu = 'Explore',
+  selectedSubmenu,
+  setSelectedSubmenu,
+}: {
+  label: string;
+  to: string;
+  submenu: { label: string; to: string }[];
+  defaultSelectedSubmenu?: string;
+  selectedSubmenu: string;
+  setSelectedSubmenu: (submenu: string) => void;
+}) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <div
+      className={`relative flex h-full flex-col ${isOpen ? 'overflow-visible' : 'overflow-hidden'}`}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <Link
+        to={to}
+        className="flex min-h-full flex-col items-center justify-center"
+        onClick={() => {
+          setIsOpen(false);
+          setSelectedSubmenu(defaultSelectedSubmenu);
+        }}
+      >
+        <span>{label}</span>
+        {selectedSubmenu && <span className="text-xs normal-case">{selectedSubmenu}</span>}
+      </Link>
+
+      <div className={`popover-wrapper border-primary-a50 !static !rounded-t-none border-t`}>
+        <div className={`popover-content !pb-0`}>
+          {submenu.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="list-item"
+              onClick={() => {
+                setIsOpen(false);
+                setSelectedSubmenu(item.label);
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 

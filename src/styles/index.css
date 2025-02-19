@@ -6,7 +6,7 @@
 }
 
 .header {
-    @apply relative flex h-16 items-center justify-between bg-surface-tonal-a0 text-surface-tonal-a50;
+    @apply relative flex h-16 items-center justify-between bg-surface-a0 text-surface-a50 gap-4;
 }
 
 .header-logo {
