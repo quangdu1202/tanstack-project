@@ -1,9 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/posts')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/posts"!</div>;
+  return (
+    <>
+      {/* Renders posts.index.tsx OR posts.$postId.tsx */}
+      {/* Ensures that both the post list and the slide-out can coexist */}
+      <Outlet />
+    </>
+  );
 }

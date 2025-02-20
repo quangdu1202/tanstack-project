@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as RecommendedImport } from './routes/recommended'
 import { Route as PostsImport } from './routes/posts'
 import { Route as CollectionsImport } from './routes/collections'
 import { Route as BooksImport } from './routes/books'
@@ -22,14 +21,9 @@ import { Route as BooksIndexImport } from './routes/books/index'
 import { Route as PostsRecommendedImport } from './routes/posts/recommended'
 import { Route as PostsPopularImport } from './routes/posts/popular'
 import { Route as PostsFollowingImport } from './routes/posts/following'
+import { Route as PostsPostIdImport } from './routes/posts/$postId'
 
 // Create/Update Routes
-
-const RecommendedRoute = RecommendedImport.update({
-  id: '/recommended',
-  path: '/recommended',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const PostsRoute = PostsImport.update({
   id: '/posts',
@@ -91,6 +85,12 @@ const PostsFollowingRoute = PostsFollowingImport.update({
   getParentRoute: () => PostsRoute,
 } as any)
 
+const PostsPostIdRoute = PostsPostIdImport.update({
+  id: '/$postId',
+  path: '/$postId',
+  getParentRoute: () => PostsRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -123,12 +123,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsImport
       parentRoute: typeof rootRoute
     }
-    '/recommended': {
-      id: '/recommended'
-      path: '/recommended'
-      fullPath: '/recommended'
-      preLoaderRoute: typeof RecommendedImport
-      parentRoute: typeof rootRoute
+    '/posts/$postId': {
+      id: '/posts/$postId'
+      path: '/$postId'
+      fullPath: '/posts/$postId'
+      preLoaderRoute: typeof PostsPostIdImport
+      parentRoute: typeof PostsImport
     }
     '/posts/following': {
       id: '/posts/following'
@@ -200,6 +200,7 @@ const CollectionsRouteWithChildren = CollectionsRoute._addFileChildren(
 )
 
 interface PostsRouteChildren {
+  PostsPostIdRoute: typeof PostsPostIdRoute
   PostsFollowingRoute: typeof PostsFollowingRoute
   PostsPopularRoute: typeof PostsPopularRoute
   PostsRecommendedRoute: typeof PostsRecommendedRoute
@@ -207,6 +208,7 @@ interface PostsRouteChildren {
 }
 
 const PostsRouteChildren: PostsRouteChildren = {
+  PostsPostIdRoute: PostsPostIdRoute,
   PostsFollowingRoute: PostsFollowingRoute,
   PostsPopularRoute: PostsPopularRoute,
   PostsRecommendedRoute: PostsRecommendedRoute,
@@ -220,7 +222,7 @@ export interface FileRoutesByFullPath {
   '/books': typeof BooksRouteWithChildren
   '/collections': typeof CollectionsRouteWithChildren
   '/posts': typeof PostsRouteWithChildren
-  '/recommended': typeof RecommendedRoute
+  '/posts/$postId': typeof PostsPostIdRoute
   '/posts/following': typeof PostsFollowingRoute
   '/posts/popular': typeof PostsPopularRoute
   '/posts/recommended': typeof PostsRecommendedRoute
@@ -231,7 +233,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/recommended': typeof RecommendedRoute
+  '/posts/$postId': typeof PostsPostIdRoute
   '/posts/following': typeof PostsFollowingRoute
   '/posts/popular': typeof PostsPopularRoute
   '/posts/recommended': typeof PostsRecommendedRoute
@@ -246,7 +248,7 @@ export interface FileRoutesById {
   '/books': typeof BooksRouteWithChildren
   '/collections': typeof CollectionsRouteWithChildren
   '/posts': typeof PostsRouteWithChildren
-  '/recommended': typeof RecommendedRoute
+  '/posts/$postId': typeof PostsPostIdRoute
   '/posts/following': typeof PostsFollowingRoute
   '/posts/popular': typeof PostsPopularRoute
   '/posts/recommended': typeof PostsRecommendedRoute
@@ -262,7 +264,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/collections'
     | '/posts'
-    | '/recommended'
+    | '/posts/$postId'
     | '/posts/following'
     | '/posts/popular'
     | '/posts/recommended'
@@ -272,7 +274,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/recommended'
+    | '/posts/$postId'
     | '/posts/following'
     | '/posts/popular'
     | '/posts/recommended'
@@ -285,7 +287,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/collections'
     | '/posts'
-    | '/recommended'
+    | '/posts/$postId'
     | '/posts/following'
     | '/posts/popular'
     | '/posts/recommended'
@@ -300,7 +302,6 @@ export interface RootRouteChildren {
   BooksRoute: typeof BooksRouteWithChildren
   CollectionsRoute: typeof CollectionsRouteWithChildren
   PostsRoute: typeof PostsRouteWithChildren
-  RecommendedRoute: typeof RecommendedRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -308,7 +309,6 @@ const rootRouteChildren: RootRouteChildren = {
   BooksRoute: BooksRouteWithChildren,
   CollectionsRoute: CollectionsRouteWithChildren,
   PostsRoute: PostsRouteWithChildren,
-  RecommendedRoute: RecommendedRoute,
 }
 
 export const routeTree = rootRoute
@@ -324,8 +324,7 @@ export const routeTree = rootRoute
         "/",
         "/books",
         "/collections",
-        "/posts",
-        "/recommended"
+        "/posts"
       ]
     },
     "/": {
@@ -346,14 +345,16 @@ export const routeTree = rootRoute
     "/posts": {
       "filePath": "posts.tsx",
       "children": [
+        "/posts/$postId",
         "/posts/following",
         "/posts/popular",
         "/posts/recommended",
         "/posts/"
       ]
     },
-    "/recommended": {
-      "filePath": "recommended.tsx"
+    "/posts/$postId": {
+      "filePath": "posts/$postId.tsx",
+      "parent": "/posts"
     },
     "/posts/following": {
       "filePath": "posts/following.tsx",
