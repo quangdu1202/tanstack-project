@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
 
 export const Route = createFileRoute('/posts/')({
   component: RouteComponent,
