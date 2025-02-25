@@ -35,6 +35,8 @@
     "@tanstack/react-router": "^1.102.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-intersection-observer": "^9.15.1",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6"
   }
 }

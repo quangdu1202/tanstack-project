@@ -1,0 +1,9 @@
+export { default as FastForward } from './FastForward';
+export { default as Fullscreen } from './Fullscreen';
+export { default as PictureInPicture } from './PictureInPicture';
+export { default as Play } from './Play';
+export { default as Rewind } from './Rewind';
+export { default as Speed } from './Speed';
+export { default as TheaterMode } from './TheaterMode';
+export { default as VolumeControl } from './VolumeControl';
+export { default as Progress } from './Progress';

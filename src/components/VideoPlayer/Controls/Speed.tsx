@@ -1,5 +1,6 @@
 import { Button } from '../Button';
 import { IconMultiplier1x } from '@tabler/icons-react';
+import React from 'react';
 
 export const Speed = () => {
   return (
@@ -8,3 +9,5 @@ export const Speed = () => {
     </Button>
   );
 };
+
+export default React.memo(Speed);

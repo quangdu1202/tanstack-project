@@ -13,7 +13,7 @@ interface ProgressProps {
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Progress = ({
+const Progress = ({
   currentTimeUI,
   remainingTimeUI,
   bufferProgress,
@@ -66,3 +66,5 @@ export const Progress = ({
     </>
   );
 };
+
+export default React.memo(Progress);

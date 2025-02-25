@@ -1,5 +1,6 @@
 import { Button } from '../Button';
 import { IconViewportWide } from '@tabler/icons-react';
+import React from 'react';
 
 export const TheaterMode = () => {
   return (
@@ -8,3 +9,5 @@ export const TheaterMode = () => {
     </Button>
   );
 };
+
+export default React.memo(TheaterMode);

@@ -1,4 +1,4 @@
-import { Button as ControlButton } from './Button';
+import { Button as ControlButton } from '../Button';
 import { IconVolume, IconVolume2, IconVolume3 } from '@tabler/icons-react';
 import React from 'react';
 
@@ -36,3 +36,5 @@ export const VolumeControl = ({ value, onClick, onChangeValue }: VolumeControlPr
     </div>
   );
 };
+
+export default React.memo(VolumeControl);
