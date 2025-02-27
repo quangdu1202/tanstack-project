@@ -14,7 +14,7 @@ function RootComponent() {
       <div className={'main'}>
         <Outlet />
       </div>
-      <TanStackRouterDevtools position="bottom-right" />
+      <TanStackRouterDevtools position="bottom-left" />
     </>
   );
 }

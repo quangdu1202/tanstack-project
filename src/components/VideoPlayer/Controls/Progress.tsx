@@ -1,12 +1,12 @@
-import React, { forwardRef, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { debounce, formatTime } from '../helpers';
 
 interface ProgressProps {
-  ref: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement>;
   autoPlay?: boolean;
 }
 
-const Progress = forwardRef<HTMLVideoElement, ProgressProps>(({ autoPlay }, ref) => {
+const Progress = ({ videoRef, autoPlay }: ProgressProps) => {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [bufferProgress, setBufferProgress] = useState(0);
   const [seekProgress, setSeekProgress] = useState(0);
@@ -14,7 +14,7 @@ const Progress = forwardRef<HTMLVideoElement, ProgressProps>(({ autoPlay }, ref)
   const [seekTooltipPosition, setSeekTooltipPosition] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
 
-  const video = ref && 'current' in ref ? ref.current : null;
+  const video = videoRef.current;
 
   // Handle time updates with debouncing
   const handleTimeUpdate = useCallback(() => {
@@ -134,6 +134,6 @@ const Progress = forwardRef<HTMLVideoElement, ProgressProps>(({ autoPlay }, ref)
       </time>
     </div>
   );
-});
+};
 
 export default Progress;

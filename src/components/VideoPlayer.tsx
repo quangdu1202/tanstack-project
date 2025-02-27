@@ -24,6 +24,7 @@ interface VideoPlayerUIProps {
   playbackState: boolean;
   rewindHandler: () => void;
   src: string;
+  toggleFloatingHandler: () => void;
   toggleFullscreenHandler: () => void;
   toggleMuteHandler: () => void;
   togglePlayHandler: () => void;
@@ -32,7 +33,7 @@ interface VideoPlayerUIProps {
   videoVolumeChangeHandler: (event: React.SyntheticEvent<HTMLVideoElement>) => void;
   volume: number;
   volumeInputChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
+  videoRef: React.RefObject<HTMLVideoElement>;
 }
 
 const VideoPlayerUI = React.memo(
@@ -46,6 +47,7 @@ const VideoPlayerUI = React.memo(
     playbackState,
     rewindHandler,
     src,
+    toggleFloatingHandler,
     toggleFullscreenHandler,
     toggleMuteHandler,
     togglePlayHandler,
@@ -81,10 +83,13 @@ const VideoPlayerUI = React.memo(
           </button>
           <div
             onClick={togglePlayHandler}
-            className="flex min-h-0 grow items-center justify-center"
+            className={twMerge(
+              'flex min-h-0 grow items-center justify-center',
+              isFloating ? 'rounded-t-xl' : '',
+            )}
           >
             <video
-              className="h-full"
+              className={twMerge('h-full', isFloating ? 'rounded-t-xl' : '')}
               ref={videoRef}
               src={src}
               controls={false}
@@ -92,10 +97,16 @@ const VideoPlayerUI = React.memo(
               onPlay={videoPlayHandler}
               onPause={videoPauseHandler}
               onVolumeChange={videoVolumeChangeHandler}
+              onError={(e) => console.error('Video error:', e.currentTarget.error)}
             />
           </div>
-          <div className="vp-controls flex flex-col items-center justify-center border-t border-white bg-black px-5 py-2 text-white">
-            <Progress ref={videoRef} autoPlay={autoPlay} />
+          <div
+            className={twMerge(
+              'vp-controls flex flex-col items-center justify-center border-t border-white bg-black px-5 py-2 text-white',
+              isFloating ? 'rounded-b-xl' : '',
+            )}
+          >
+            <Progress videoRef={videoRef} autoPlay={autoPlay} />
             <div className="vp-controls__body flex h-1/2 w-full items-center justify-between gap-6">
               <div className="relative flex h-full items-center justify-start gap-1">
                 <Play isPlaying={playbackState} onClick={togglePlayHandler} />
@@ -118,8 +129,8 @@ const VideoPlayerUI = React.memo(
                   <FastForward onClick={fastForwardHandler} />
                 </div>
                 <div className="flex gap-1">
-                  <Speed />
-                  <PictureInPicture />
+                  <Speed videoRef={videoRef} />
+                  <PictureInPicture isFloating={isFloating} onClick={toggleFloatingHandler} />
                   <Fullscreen isFullscreen={fullscreenState} onClick={toggleFullscreenHandler} />
                 </div>
               </div>
@@ -132,28 +143,69 @@ const VideoPlayerUI = React.memo(
 );
 
 export function VideoPlayer({ src, autoPlay = false }: { src: string; autoPlay?: boolean }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null!);
   const [playbackState, setPlaybackState] = useState(false);
   const [volume, setVolume] = useLocalStorage('videoPlayerVolume', 1);
-  const prevVolume = useRef(1);
+  const prevVolume = useRef(volume || 1);
   const [fullscreenState, setFullscreenState] = useState(false);
   const [pipIsForceClosed, setPipIsForceClosed] = useState(false);
   const { ref: inViewRef, inView, entry } = useInView({ threshold: [0, 0.5, 1] });
 
+  // Add manual control for floating state
+  const [isManuallyFloating, setIsManuallyFloating] = useState(false);
+
   const isFloating = useMemo(() => {
-    if (!entry) return false;
-    if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+    const isIntersecting = entry?.isIntersecting;
+    const intersectionRatio = entry?.intersectionRatio || 0;
+
+    console.log(
+      'isIntersecting',
+      isIntersecting,
+      'intersectionRatio',
+      intersectionRatio,
+      'pipIsForceClosed',
+      pipIsForceClosed,
+      'isManuallyFloating',
+      isManuallyFloating,
+      'videoRef?.current?.paused',
+      videoRef?.current?.paused,
+    );
+
+    // if the video is intersecting and intersection ratio is >= 0.5, or pip is force closed or not playing, return false
+    if (
+      ((isIntersecting && intersectionRatio >= 0.5) ||
+        pipIsForceClosed ||
+        videoRef?.current?.paused) &&
+      !isManuallyFloating
+    ) {
       setPipIsForceClosed(false);
       return false;
     }
-    if (pipIsForceClosed) return false;
-    return !videoRef.current?.paused;
-  }, [inView, entry, pipIsForceClosed]);
+
+    // if the video is intersecting and intersection ratio is < 0.5 and pip is not force closed and playing, return true
+    if (
+      (isIntersecting && intersectionRatio < 0.5) ||
+      (!isIntersecting && !pipIsForceClosed && !videoRef?.current?.paused) ||
+      isManuallyFloating
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [inView, entry, pipIsForceClosed, isManuallyFloating]);
 
   const closePip = useCallback(() => {
     setPipIsForceClosed(true);
+    setIsManuallyFloating(false);
     videoRef.current?.pause();
   }, []);
+
+  const toggleFloatingHandler = useCallback(() => {
+    setIsManuallyFloating((prevState) => !prevState);
+    if (isFloating) {
+      closePip();
+    }
+  }, [isManuallyFloating]);
 
   const toggleFullscreenHandler = useCallback(() => {
     if (document.fullscreenElement) {
@@ -189,10 +241,15 @@ export function VideoPlayer({ src, autoPlay = false }: { src: string; autoPlay?:
     videoRef.current!.currentTime += 5;
   }, []);
 
-  const volumeInputChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current!;
-    video.volume = +event.target.value;
-  }, []);
+  const volumeInputChangeHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newVolume = Math.min(1, Math.max(0, +event.target.value));
+      const video = videoRef.current!;
+      video.volume = newVolume;
+      setVolume(newVolume);
+    },
+    [setVolume],
+  );
 
   const videoVolumeChangeHandler = useCallback(
     (event: React.SyntheticEvent<HTMLVideoElement>) => {
@@ -231,6 +288,7 @@ export function VideoPlayer({ src, autoPlay = false }: { src: string; autoPlay?:
       playbackState={playbackState}
       rewindHandler={rewindHandler}
       src={src}
+      toggleFloatingHandler={toggleFloatingHandler}
       toggleFullscreenHandler={toggleFullscreenHandler}
       toggleMuteHandler={toggleMuteHandler}
       togglePlayHandler={togglePlayHandler}

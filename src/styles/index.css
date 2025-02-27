@@ -6,7 +6,7 @@
 }
 
 .header {
-    @apply relative flex h-16 items-center justify-between bg-surface-a0 text-surface-a50 gap-4;
+    @apply relative flex h-16 items-center justify-between gap-4 bg-surface-a0 text-surface-a50;
 }
 
 .header-logo {
@@ -20,11 +20,11 @@
         @apply flex h-full items-center px-8 font-semibold uppercase;
 
         &.active {
-            @apply text-primary-a20 bg-surface-a10;
+            @apply bg-surface-a10 text-primary-a20;
         }
 
         &:hover {
-            @apply text-primary-a20 bg-surface-a20;
+            @apply bg-surface-a20 text-primary-a20;
         }
     }
 }
@@ -40,7 +40,7 @@
         }
 
         &:focus {
-            @apply shadow-sm shadow-blue-400 outline-none border-primary-a50 bg-surface-a10;
+            @apply shadow-sm shadow-blue-400 outline-none bg-surface-a10 border-primary-a50;
         }
 
     }
@@ -211,7 +211,7 @@
 }
 
 .loader-bar {
-    @apply sticky top-0 w-full h-0.5 bg-primary-a0;
+    @apply sticky top-0 w-full bg-primary-a0 h-0.5;
 }
 
 .main {
@@ -239,7 +239,7 @@
 }
 
 .sidebar {
-    @apply relative flex w-96 flex-col border-r border-surface-a50 bg-surface-a10;
+    @apply relative flex w-96 flex-col border-r bg-surface-a10 border-surface-a50;
 
     .sidebar-actions {
         @apply absolute top-0 z-40 flex h-10 w-96 items-center justify-between border-b border-primary-a50;
@@ -289,7 +289,7 @@
     }
 
     .item {
-        @apply flex h-10 w-full justify-between items-center px-6;
+        @apply flex h-10 w-full items-center justify-between px-6;
 
         &:hover {
             @apply bg-surface-a20;
@@ -305,11 +305,11 @@
     }
 
     .tag-pill {
-        @apply flex ml-3 px-3 text-sm items-center justify-center rounded-full bg-primary-a10 text-white cursor-pointer;
+        @apply ml-3 flex cursor-pointer items-center justify-center rounded-full px-3 text-sm text-white bg-primary-a10;
     }
 
     .tag-name {
-        @apply max-w-56 truncate;
+        @apply truncate max-w-56;
     }
 
     .tag-post-count {
